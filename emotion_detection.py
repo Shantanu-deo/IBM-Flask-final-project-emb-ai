@@ -6,7 +6,6 @@ app = Flask(__name__)
 @app.route('/get_emotion')
 def emotion_detector():
     text_to_analyze =  request.args.get('text')
-    print(text_to_analyze)
 
     url = 'https://sn-watson-emotion.labs.skills.network/v1/watson.runtime.nlp.v1/NlpService/EmotionPredict'
     headers = {
@@ -18,9 +17,9 @@ def emotion_detector():
             "text": text_to_analyze
         }
     }
-    response = requests.get(url, headers=headers, params={"data": json.dumps(input_json)})
+    response = requests.post(url, headers=headers, json=input_json)
     if response.status_code == 200:
-        return response.json()
+        return response.json()['emotionPredictions'][0]['emotion']
     else:
         return f"Error: {response.status_code}, {response.text}"
 
